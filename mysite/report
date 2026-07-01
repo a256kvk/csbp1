@@ -1,0 +1,6 @@
+LINK: 
+
+FLAW 1:
+{link to source}
+This is from OWASP top 10 2025 and is flaw number 6, insecure design.
+When registering, the register form makes a GET request instead of a POST request. This also means that the password is sent via GET parameters, which show after the url and the url is like: http://localhost:8000/register/?csrfmiddlewaretoken=something&username=lol&password1=adsf&password2=adsf. The flaw is that these parameters usually get logged in the browser and in some cases on the server. This means that the password exists as plaintext on the client's computer.

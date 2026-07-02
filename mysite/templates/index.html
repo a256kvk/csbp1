@@ -5,6 +5,14 @@
 	{% csrf_token %}
 	<button type="submit">Log out</button>
 </form>
+<a href="/create/">Create a post</a>
 {% else %}
 <a href="/accounts/login">Log in</a>
 {% endif %}
+
+{% for p in posts %}
+<article>
+	<h2>Post by {{p.account}}</h2>
+	<p>{{p.content}}</p>
+</article>
+{% endfor %}

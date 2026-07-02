@@ -2,9 +2,15 @@ from django.shortcuts import render, redirect
 from django.http import HttpResponse
 from django.contrib.auth.forms import UserCreationForm
 
+from django.contrib.auth.models import User
+
+from .models import PostModel
+from .forms import CreateForm
+
 def homePageView(request):
-    username = request.user.username
-    return render(request, "index.html", {"un": username})
+    posts = PostModel.objects.all()
+
+    return render(request, "index.html", {"posts": posts})
 
 def registerView(request):
     #if request.method == "POST":
@@ -16,3 +22,10 @@ def registerView(request):
             return redirect("/accounts/login/")
 
     return render(request, "register.html", {"form": UserCreationForm()})
+
+def createView(request):
+    if request.method == "POST":
+        form = CreateForm(request.POST)
+        if form.is_valid():
+            form.save(request.user)
+    return render(request, "create.html", {"form": CreateForm()})

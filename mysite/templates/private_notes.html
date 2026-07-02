@@ -7,7 +7,9 @@
 {% if user.is_authenticated %}
 
 <form method="POST">
+	<!--
 	{% csrf_token %}
+	-->
 	<textarea name="content">{{ notes }}</textarea><br>
 	<button type="submit">Save</button>
 </form>

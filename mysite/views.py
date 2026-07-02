@@ -2,6 +2,8 @@ from django.shortcuts import render, redirect
 from django.http import HttpResponse, HttpResponseForbidden
 from django.contrib import messages
 from django.contrib.auth.forms import UserCreationForm
+from django.views.decorators.csrf import csrf_exempt
+from django.contrib.auth.decorators import login_required
 
 from django.contrib.auth.models import User
 from django.db import connection
@@ -13,11 +15,14 @@ def homePageView(request):
     posts = PostsModel.objects.all()
     return render(request, "index.html", {"posts": posts})
 
+# remove @csrf_exempt
+@csrf_exempt
 def privateNotesView(request):
     if request.method == "POST":
         content = request.POST["content"]
         print("update or create")
         PrivateNotesModel.objects.update_or_create(account=request.user, defaults={"content":content})
+        return redirect("/private_notes/")
     try:
         notes=PrivateNotesModel.objects.get(account=request.user).content
     except PrivateNotesModel.DoesNotExist:
@@ -32,7 +37,6 @@ def userView(request,user_id):
 def searchUserView(request):
     if request.method == "POST":
         query = request.POST["query"]
-        ### SQL INJECTION
         #fixed code:
         #r=User.objects.filter(username__contains=query)
 
@@ -56,6 +60,7 @@ def registerView(request):
 
     return render(request, "register.html", {"form": UserCreationForm()})
 
+@login_required
 def createView(request):
     if request.method == "POST":
         form = CreateForm(request.POST)
@@ -63,6 +68,7 @@ def createView(request):
             form.save(request.user)
     return render(request, "create.html", {"form": CreateForm()})
 
+@login_required
 def deleteView(request):
     if request.method == "POST":
         post_id = request.POST["id"]

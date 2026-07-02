@@ -1,3 +1,4 @@
+TODO: change 2025 -> 2021
 LINK: https://github.com/a256kvk/csbp1
 
 FLAW 1:
@@ -6,7 +7,7 @@ This is from OWASP top 10 2025 and is flaw number 6, insecure design.
 When registering, the register form makes a GET request instead of a POST request. This also means that the password is sent via GET parameters, which show after the url and the url is like: http://localhost:8000/register/?csrfmiddlewaretoken=something&username=lol&password1=adsf&password2=adsf. The flaw is that these parameters usually get logged in the browser and in some cases on the server. This means that the password exists as plaintext on the client's computer.
 
 FLAW 2:
-CSRF (cross site forgery)
+CSRF (cross-site request forgery)
 There is a CSRF vulnerability in updating private notes. A malicious website can send a POST request (for example a hidden form) to the website (http://localhost:8000/private_notes/) and overwrite the private notes if the user is logged in on the target website (http://localhost:8000). For example if you run `python -m http.server 8080` in the directory with csrf_attack_demo.html and go to "http://localhost:8080/csrf_attack_demo.html", it automatically does this (has an invisible form that is automatically sent using JavaScript and does the CSRF attack and overwrites the user's notes). Note that this only works if you are logged in. Note that this doesn't work (at least in my browser) if you just manually open the html file in your browser on your computer normally.
 
 FLAW 3:

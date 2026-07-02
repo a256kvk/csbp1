@@ -1,7 +1,7 @@
 <p>WELCOME</p>
 {% if user.is_authenticated %}
 {{ user.username }}
-<form action="accounts/logout/" method="POST">
+<form action="/accounts/logout/" method="POST">
 	{% csrf_token %}
 	<button type="submit">Log out</button>
 </form>
@@ -12,7 +12,14 @@
 
 {% for p in posts %}
 <article>
-	<h2>Post by {{p.account}}</h2>
+	<h2>Post by {{p.account.username}}</h2>
 	<p>{{p.content}}</p>
+	{% if p.account.id == user.id %}
+	<form action="/delete/" method="POST">
+		{% csrf_token %}
+		<input type="hidden" name="id" value="{{p.id}}">
+		<button type="submit">Delete</button>
+	</form>
+	{% endif %}
 </article>
 {% endfor %}

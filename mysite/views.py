@@ -1,5 +1,5 @@
 from django.shortcuts import render, redirect
-from django.http import HttpResponse
+from django.http import HttpResponse, HttpResponseForbidden
 from django.contrib.auth.forms import UserCreationForm
 
 from django.contrib.auth.models import User
@@ -9,7 +9,6 @@ from .forms import CreateForm
 
 def homePageView(request):
     posts = PostModel.objects.all()
-
     return render(request, "index.html", {"posts": posts})
 
 def registerView(request):
@@ -29,3 +28,12 @@ def createView(request):
         if form.is_valid():
             form.save(request.user)
     return render(request, "create.html", {"form": CreateForm()})
+
+def deleteView(request):
+    if request.method == "POST":
+        post_id = request.POST["id"]
+        post = PostModel.objects.get(id=post_id)
+        #if request.user.id != post.account.id:
+        #    return HttpResponseForbidden()
+        post.delete()
+        return redirect("/")

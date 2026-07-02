@@ -9,7 +9,8 @@ FLAW 2:
 CSRF (cross site forgery) ?
 
 FLAW 3:
-Broken access control 01:2025 ?
+Broken access control 01:2025
+When deleting a post, it is not checked on the server if the user has the permissions to delete the post (i.e. it is not checked if the post was made by the user). This means that it is possible for someone to just delete any post on the site by for example just changing the hidden input field that specifies the post id that is going to get deleted to any arbitrary id and sending the request.
 "Forget" to check privileges on server side on some form
 
 FLAW 4:

@@ -14,8 +14,8 @@ When deleting a post, it is not checked on the server if the user has the permis
 "Forget" to check privileges on server side on some form
 
 FLAW 4:
-Injection 05:2025 ?
-SQL injection ?
+Injection 05:2025
+The search functionality for users is vulnerable to an sql injection.
 
 FLAW 5:
 10:2025 Mishandling of exceptional conditions

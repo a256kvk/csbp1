@@ -3,14 +3,19 @@
 
 {% block content %}
 {% if user.is_authenticated %}
-<a href="/create/">Create a post</a>
-<a href="/private_notes/">Make or view private notes</a>
+<a href="/private_notes/">Make or view private notes</a> <br>
+<a href="/search_user/">Search for users by username</a> <br>
 {% endif %}
 
 <h2>Posts</h2>
+{% if user.is_authenticated %}
+<a href="/create/">Create a post</a> <br>
+{% else %}
+<p><a href="/login">Log in</a> to create posts</p>
+{% endif %}
 {% for p in posts %}
 <article>
-	<h3>Post by {{p.account.username}}</h3>
+	<h3>Post by <a href="/user/{{p.account.id}}/">{{p.account.username}}</a></h3>
 	<p>{{p.content}}</p>
 	{% if p.account.id == user.id %}
 	<form action="/delete/" method="POST">

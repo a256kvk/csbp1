@@ -1,0 +1,21 @@
+{% extends "layout.html" %}
+{% block title %}Search by username{% endblock %}
+
+{% block content %}
+
+<h2>Search for users</h2>
+<form method="POST">
+	{% csrf_token %}
+	<input type="text" name="query" placeholder="search by a username">
+	<button type="submit">search</button>
+</form>
+{% if results is not None %}
+<ul>
+	{% for r in results %}
+	<li>
+	<a href="/user/{{r.id}}">{{r.username}}</a>
+	</li>
+	{% endfor %}
+</ul>
+{% endif %}
+{% endblock %}

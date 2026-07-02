@@ -1,8 +1,10 @@
 from django.shortcuts import render, redirect
 from django.http import HttpResponse, HttpResponseForbidden
+from django.contrib import messages
 from django.contrib.auth.forms import UserCreationForm
 
 from django.contrib.auth.models import User
+from django.db import connection
 
 from .models import PostsModel, PrivateNotesModel
 from .forms import CreateForm
@@ -26,6 +28,22 @@ def userView(request,user_id):
     user = User.objects.get(id=user_id)
     posts = PostsModel.objects.filter(account=user)
     return render(request, "user.html", {"posts": posts, "user_id": user_id, "username": user.username})
+
+def searchUserView(request):
+    if request.method == "POST":
+        query = request.POST["query"]
+        ### SQL INJECTION
+        #fixed code:
+        #r=User.objects.filter(username__contains=query)
+
+        #vulnerable code:
+        with connection.cursor() as cur:
+            res=cur.execute(f"SELECT id, username FROM auth_user WHERE username LIKE '%{query}%'")
+            r=[{"id": q[0],"username": q[1]} for q in res.fetchall()]
+        #^vulnerable code
+    else:
+        r=None
+    return render(request, "search_user.html", {"results":r})
 
 def registerView(request):
     #if request.method == "POST":

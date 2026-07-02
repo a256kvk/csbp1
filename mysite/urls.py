@@ -17,7 +17,7 @@ Including another URLconf
 
 from django.contrib import admin
 from django.urls import include, path
-from .views import homePageView, registerView, createView, deleteView
+from .views import homePageView, registerView, createView, deleteView, privateNotesView
 
 urlpatterns = [
     path("admin/", admin.site.urls),
@@ -26,4 +26,5 @@ urlpatterns = [
     path("register/", registerView, name="register"),
     path("create/", createView, name="create"),
     path("delete/", deleteView, name="delete"),
+    path("private_notes/", privateNotesView, name="private notes"),
 ]

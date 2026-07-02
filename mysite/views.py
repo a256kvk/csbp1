@@ -4,12 +4,23 @@ from django.contrib.auth.forms import UserCreationForm
 
 from django.contrib.auth.models import User
 
-from .models import PostModel
+from .models import PostsModel, PrivateNotesModel
 from .forms import CreateForm
 
 def homePageView(request):
-    posts = PostModel.objects.all()
+    posts = PostsModel.objects.all()
     return render(request, "index.html", {"posts": posts})
+
+def privateNotesView(request):
+    if request.method == "POST":
+        content = request.POST["content"]
+        print("update or create")
+        PrivateNotesModel.objects.update_or_create(account=request.user, defaults={"content":content})
+    try:
+        notes=PrivateNotesModel.objects.get(account=request.user).content
+    except PrivateNotesModel.DoesNotExist:
+        notes=""
+    return render(request, "private_notes.html", {"notes": notes})
 
 def registerView(request):
     #if request.method == "POST":
@@ -32,7 +43,7 @@ def createView(request):
 def deleteView(request):
     if request.method == "POST":
         post_id = request.POST["id"]
-        post = PostModel.objects.get(id=post_id)
+        post = PostsModel.objects.get(id=post_id)
         #if request.user.id != post.account.id:
         #    return HttpResponseForbidden()
         post.delete()

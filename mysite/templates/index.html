@@ -6,13 +6,16 @@
 	<button type="submit">Log out</button>
 </form>
 <a href="/create/">Create a post</a>
+<a href="/private_notes/">Make or view private notes</a>
 {% else %}
 <a href="/accounts/login">Log in</a>
+<a href="/register">Register</a>
 {% endif %}
 
+<h2>Posts</h2>
 {% for p in posts %}
 <article>
-	<h2>Post by {{p.account.username}}</h2>
+	<h3>Post by {{p.account.username}}</h3>
 	<p>{{p.content}}</p>
 	{% if p.account.id == user.id %}
 	<form action="/delete/" method="POST">

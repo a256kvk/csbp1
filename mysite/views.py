@@ -22,6 +22,11 @@ def privateNotesView(request):
         notes=""
     return render(request, "private_notes.html", {"notes": notes})
 
+def userView(request,user_id):
+    user = User.objects.get(id=user_id)
+    posts = PostsModel.objects.filter(account=user)
+    return render(request, "user.html", {"posts": posts, "user_id": user_id, "username": user.username})
+
 def registerView(request):
     #if request.method == "POST":
     #    form = UserCreationForm(request.POST)
@@ -29,7 +34,7 @@ def registerView(request):
         form = UserCreationForm(request.GET)
         if form.is_valid():
             form.save()
-            return redirect("/accounts/login/")
+            return redirect("/login/")
 
     return render(request, "register.html", {"form": UserCreationForm()})
 

@@ -1,5 +1,5 @@
 {% extends "layout.html" %}
-{% block title %}Posts{% endblock %}
+{% block title %}Posts by {{username}}{% endblock %}
 
 {% block content %}
 {% if user.is_authenticated %}
@@ -7,10 +7,9 @@
 <a href="/private_notes/">Make or view private notes</a>
 {% endif %}
 
-<h2>Posts</h2>
+<h2>Posts by {{username}}</h2>
 {% for p in posts %}
 <article>
-	<h3>Post by {{p.account.username}}</h3>
 	<p>{{p.content}}</p>
 	{% if p.account.id == user.id %}
 	<form action="/delete/" method="POST">

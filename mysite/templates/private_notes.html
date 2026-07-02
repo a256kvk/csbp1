@@ -1,12 +1,7 @@
-{% if user.is_authenticated %}
-{{ user.username }}
-<form action="/accounts/logout/" method="POST">
-	{% csrf_token %}
-	<button type="submit">Log out</button>
-</form>
-{% else %}
-<a href="/accounts/login">Log in</a>
-{% endif %}
+{% extends "layout.html" %}
+{% block title %}Create a post{% endblock %}
+
+{% block content %}
 
 <h1>Private notes</h1>
 {% if user.is_authenticated %}
@@ -22,3 +17,5 @@
 <p><a href="/accounts/login">Log in</a>to see your private notes</p>
 
 {% endif %}
+{% endblock %}
+

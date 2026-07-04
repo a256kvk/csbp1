@@ -17,6 +17,7 @@
 <article>
 	<h3>Post by <a href="/user/{{p.account.id}}/">{{p.account.username}}</a></h3>
 	<p>{{p.content}}</p>
+	<a href="/post/{{p.id}}/">View raw</a>
 	{% if p.account.id == user.id %}
 	<form action="/delete/" method="POST">
 		{% csrf_token %}

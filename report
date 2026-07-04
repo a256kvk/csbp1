@@ -3,23 +3,23 @@ LINK: https://github.com/a256kvk/csbp1
 
 FLAW 1:
 {link to source}
-This is from OWASP top 10 2025 and is flaw number 6, insecure design.
+This is from OWASP top 10 2017 and is flaw number 3, Sensitive Data Exposure (A3:2017)
 When registering, the register form makes a GET request instead of a POST request. This also means that the password is sent via GET parameters, which show after the url and the url is like: http://localhost:8000/register/?csrfmiddlewaretoken=something&username=lol&password1=adsf&password2=adsf. The flaw is that these parameters usually get logged in the browser and in some cases on the server. This means that the password exists as plaintext on the client's computer.
 
 FLAW 2:
 CSRF (cross-site request forgery)
-There is a CSRF vulnerability in updating private notes. A malicious website can send a POST request (for example a hidden form) to the website (http://localhost:8000/private_notes/) and overwrite the private notes if the user is logged in on the target website (http://localhost:8000). For example if you run `python -m http.server 8080` in the directory with csrf_attack_demo.html and go to "http://localhost:8080/csrf_attack_demo.html", it automatically does this (has an invisible form that is automatically sent using JavaScript and does the CSRF attack and overwrites the user's notes). Note that this only works if you are logged in. Note that this doesn't work (at least in my browser) if you just manually open the html file in your browser on your computer normally.
+There is a CSRF vulnerability in updating private notes. A malicious website can send a POST request (for example a hidden form) to the website (http://localhost:8000/private_notes/) and overwrite the private notes if the user is logged in on the target website (http://localhost:8000). For example if you run `python -m http.server 8080` in the directory with csrf_attack_demo.html and go to "http://localhost:8080/csrf_attack_demo.html", it automatically does this (has an invisible form that is automatically sent using JavaScript and does the CSRF attack and overwrites the user's notes). Note that this only works if you are logged in. Note that this doesn't work (at least in my browser) if you just manually open the HTML file in your browser on your computer normally.
 
 FLAW 3:
-Broken access control 01:2025
+Broken access control (A5:2017)
 When deleting a post, it is not checked on the server if the user has the permissions to delete the post (i.e. it is not checked if the post was made by the user). This means that it is possible for someone to just delete any post on the site by for example just changing the hidden input field that specifies the post id that is going to get deleted to any arbitrary id and sending the request.
 
 (note the @login_required)
 
 FLAW 4:
-Injection 05:2025
+Injection (A1:2017)
 The search functionality for users is vulnerable to an sql injection.
 
 FLAW 5:
-10:2025 Mishandling of exceptional conditions
-Insufficient input validation -> DoS?
+Cross-Site Scripting (XSS) (A7:2017)
+In the View raw functionality, the server sends the contents of a post in a http response. However, the type of this response isn't specified as plain text, which means that in django the default type is HTML. This means that the browser views the response as HTML, which can include for example malicious JavaScript code.

@@ -34,6 +34,11 @@ def userView(request,user_id):
     posts = PostsModel.objects.filter(account=user)
     return render(request, "user.html", {"posts": posts, "user_id": user_id, "username": user.username})
 
+def postView(request,post_id):
+    posts = PostsModel.objects.get(id=post_id)
+    #return HttpResponse(posts.content, content_type="text/plain")
+    return HttpResponse(posts.content)
+
 def searchUserView(request):
     if request.method == "POST":
         query = request.POST["query"]

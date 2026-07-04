@@ -18,7 +18,7 @@ Including another URLconf
 from django.contrib import admin
 from django.contrib.auth import views as auth_views
 from django.urls import include, path
-from .views import homePageView, registerView, createView, deleteView, privateNotesView, userView, searchUserView
+from .views import homePageView, registerView, createView, deleteView, privateNotesView, userView, postView, searchUserView
 
 urlpatterns = [
     path("admin/", admin.site.urls),
@@ -30,5 +30,6 @@ urlpatterns = [
     path("delete/", deleteView, name="delete"),
     path("private_notes/", privateNotesView, name="private notes"),
     path("user/<int:user_id>/", userView, name="user"),
+    path("post/<int:post_id>/", postView, name="post"),
     path("search_user/", searchUserView, name="search user")
 ]

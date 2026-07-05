@@ -1,28 +1,35 @@
 LINK: https://github.com/a256kvk/csbp1
 
 FLAW 1:
-https://github.com/a256kvk/csbp1/mysite/models.py#L19
+https://github.com/a256kvk/csbp1/mysite/views.py#L19
 CSRF (cross-site request forgery)
 There is a CSRF vulnerability in updating private notes. A malicious website can send a POST request (for example a hidden form) to the website (http://localhost:8000/private_notes/) and overwrite the private notes if the user is logged in on the target website (http://localhost:8000). For example if you run `python -m http.server 8080` in the directory with csrf_attack_demo.html and go to "http://localhost:8080/csrf_attack_demo.html", it automatically does this (has an invisible form that is automatically sent using JavaScript and does the CSRF attack and overwrites the user's notes). Note that this only works if you are logged in. Note that this doesn't work (at least in my browser) if you just manually open the HTML file in your browser on your computer normally.
-
+To fix this flaw, you just have to comment out or remove line 19 in "views.py". Note that even to have this flaw in a django app requires to put the @csrf_exempt decorator in front of the function. Note that for the form to even work one has to also include the csrf token in the form (post request), but in this case it is already there.
 
 
 FLAW 2:
-{link to source}
-These flaws are from OWASP top 10 2017 (https://owasp.org/www-project-top-ten/2017/) and this flaw is flaw number 3, Sensitive Data Exposure.
-When registering, the register form makes a GET request instead of a POST request. This also means that the password is sent via GET parameters, which show after the url and the url is like: http://localhost:8000/register/?csrfmiddlewaretoken=something&username=lol&password1=adsf&password2=adsf. The flaw is that these parameters usually get logged in the browser and in some cases on the server. This means that the password exists as plaintext on the client's computer.
+https://github.com/a256kvk/csbp1/mysite/views.py#L56
+https://github.com/a256kvk/csbp1/mysite/templates/register.html#L8
+The flaws starting here are from OWASP top 10 2017 (https://owasp.org/www-project-top-ten/2017/) and this flaw is flaw number 3, Sensitive Data Exposure, because this flaw causes sensitive data to be stored unencrypted.
+When registering, the register form makes a GET request instead of a POST request. This also means that the password is sent via GET parameters, which show after the url and the url is like: http://localhost:8000/register/?csrfmiddlewaretoken=something&username=lol&password1=adsf&password2=adsf. The flaw is that these parameters usually get logged in the browser history and in some cases on the server if the server is setup to be logging HTTP request URLs. This means that the password exists as plaintext on the client's computer. From screenshot flaw-2-before-2.png we can see that before the flaw was fixed, we can see the username is "mattimeikalaine" and the password is "MattiOnParas123!" (since %21 is !) and from screenshot flaw-2-after-2.png we cannot see the username or the password after the flaw was fixed.
+To fix this flaw, one needs to change the GET request into a POST request. This is done by changing views.py and register.html. You need to comment out or delete lines 56 and 57 in "views.py" and uncomment the two previous lines. You also need to delete line 8 in "register.html" and uncomment the previous line.
 
 FLAW 3:
-Broken access control (A5:2017)
-When deleting a post, it is not checked on the server if the user has the permissions to delete the post (i.e. it is not checked if the post was made by the user). This means that it is possible for someone to just delete any post on the site by for example just changing the hidden input field that specifies the post id that is going to get deleted to any arbitrary id and sending the request.
-
+https://github.com/a256kvk/csbp1/mysite/views.py#L77
+This flaw is flaw number 5 - Broken Access Control in OWASP 2017.
+When deleting a post, the server only checks that the user is logged in and not if the user has the permissions to delete the post (i.e. it is not checked if the post that is going to be deleted was made by the user). This means that it is possible to craft a POST request that just deletes an arbitrary post. Note that because this functionality requires the user to be logged in and to have a CSRF token, so this can easily just be done by making a post and editing the HTML on the delete form next to the new post to and editing the hidden input field that has name="id" to the id of the post you want to delete (by editing value="14" to delete post with id 14 for example, but this number can be the id of any post). Note that to see the id of a post, you can just look at the number in the url of the "View raw" link (for example http://localhost/post/14/).
+To fix this flaw, you need to include the check that the post was made by the current user by uncommenting lines 77 and 78 in "views.py".
 (note the @login_required)
 
 FLAW 4:
-Injection (A1:2017)
+https://github.com/a256kvk/csbp1/mysite/views.py#L46
+This flaw is OWASP A1:2017-Injection.
 The search functionality for users is vulnerable to an SQL injection. Note that this is a read only SQL injection since the execute function only allows for executing one statement.
-For example, the following query string inside parenthesis (' AND 1=0 UNION SELECT account_id, content FROM mysite_privatenotesmodel WHERE '%'=') (demonstrated in screenshot )steals the private notes of all the users associated with the user ids and the link even works and links to correct the user's page. This vulnerability can be used to steal for example the password hashes of the users, the session keys / session data of users, which can be used to do session hijacking. 
+For example, the following query string inside parenthesis (' AND 1=0 UNION SELECT account_id, content FROM mysite_privatenotesmodel WHERE '%'=') (demonstrated in screenshot flaw-4-before-4.png) steals the private notes of all the users associated with the user ids and the link even works and links to correct the user's page. This vulnerability can be used to steal for example the password hashes of the users, the session keys / session data of users, which can be used to do session hijacking. For example the CONCAT-function in SQL can be used to steal any number of fields you want.
+The easiest way to fix this flaw is just to use the ORM instead of SQL commands directly. This is done by uncommenting line 45 in "views.py" and commenting out or deleting lines 46, 47 and 48. Note that an other fix for this is to just use SQL parameters instead of f-strings.
 
 FLAW 5:
-Cross-Site Scripting (XSS) (A7:2017)
-In the View raw functionality, the server sends the contents of a post in a http response. However, the type of this response isn't specified as plain text, which means that in django the default type is HTML. This means that the browser views the response as HTML, which can include for example malicious JavaScript code.
+https://github.com/a256kvk/csbp1/mysite/views.py#L40
+This flaw is OWASP (A7:2017)-Cross-Site Scripting (XSS).
+In the View raw functionality, the server sends the contents of a forum post in a HTTP response. However, the type of this response isn't specified as plain text, which means that in django the default type is HTML. This means that the browser views the response as HTML, which can even include malicious JavaScript code. This JavaScript code can do almost anything that the current user can do, or it can be used to redirect the user onto a malicious website or to even steal information. For example, if someone makes the following post in parenthesis (Click on view raw next to this post! <script>alert("You have been hacked!");</script>), then the browser will flash the message "You have been hacked!" if the "View raw" link of the post is opened.
+To fix this flaw, one needs to specify that the content type is text/plain instead of HTML. This is done by commenting out or deleting line 40 in "views.py" and uncommenting line 39.

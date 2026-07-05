@@ -40,15 +40,15 @@ def postView(request,post_id):
     return HttpResponse(posts.content)
 
 def searchUserView(request):
-    if request.method == "POST":
-        query = request.POST["query"]
+    query = request.GET.get("query")
+    if query is not None:
         #r=User.objects.filter(username__contains=query)
         with connection.cursor() as cur:
             res=cur.execute(f"SELECT id, username FROM auth_user WHERE username LIKE '%{query}%'")
             r=[{"id": q[0],"username": q[1]} for q in res.fetchall()]
     else:
         r=None
-    return render(request, "search_user.html", {"results":r})
+    return render(request, "search_user.html", {"results":r, "query": query or ""})
 
 def registerView(request):
     #if request.method == "POST":

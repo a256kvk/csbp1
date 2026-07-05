@@ -4,9 +4,9 @@
 {% block content %}
 
 <h2>Search for users</h2>
-<form method="POST">
+<form method="GET">
 	{% csrf_token %}
-	<input type="text" name="query" placeholder="search by a username">
+	<input type="text" style="width:50%;" name="query" placeholder="search by a username" value="{{query}}">
 	<button type="submit">search</button>
 </form>
 {% if results is not None %}

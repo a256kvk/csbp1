@@ -1,4 +1,5 @@
 LINK: https://github.com/a256kvk/csbp1
+python manage.py migrate
 
 FLAW 1:
 https://github.com/a256kvk/csbp1/mysite/views.py#L19
@@ -11,7 +12,7 @@ FLAW 2:
 https://github.com/a256kvk/csbp1/mysite/views.py#L56
 https://github.com/a256kvk/csbp1/mysite/templates/register.html#L8
 The flaws starting here are from OWASP top 10 2017 (https://owasp.org/www-project-top-ten/2017/) and this flaw is flaw number 3, Sensitive Data Exposure, because this flaw causes sensitive data to be stored unencrypted.
-When registering, the register form makes a GET request instead of a POST request. This also means that the password is sent via GET parameters, which show after the url and the url is like: http://localhost:8000/register/?csrfmiddlewaretoken=something&username=lol&password1=adsf&password2=adsf. The flaw is that these parameters usually get logged in the browser history and in some cases on the server if the server is setup to be logging HTTP request URLs. This means that the password exists as plaintext on the client's computer. From screenshot flaw-2-before-2.png we can see that before the flaw was fixed, we can see the username is "mattimeikalaine" and the password is "MattiOnParas123!" (since %21 is !) and from screenshot flaw-2-after-2.png we cannot see the username or the password after the flaw was fixed.
+When registering, the register form makes a GET request instead of a POST request. This also means that the password is sent via GET parameters, which show after the url and the url is like: http://localhost:8000/register/?csrfmiddlewaretoken=something&username=lol&password1=adsf&password2=adsf. The flaw is that these parameters get sometimes logged in the browser history and in some cases on the server if the server is setup to be logging HTTP request URLs. This means that the password exists as plaintext on the client's computer. From screenshot flaw-2-before-2.png we can see that before the flaw was fixed, we can see the username is "mattimeikalaine" and the password is "MattiOnParas123!" (since %21 is !) and from screenshot flaw-2-after-2.png we cannot see the username or the password after the flaw was fixed.
 To fix this flaw, one needs to change the GET request into a POST request. This is done by changing views.py and register.html. You need to comment out or delete lines 56 and 57 in "views.py" and uncomment the two previous lines. You also need to delete line 8 in "register.html" and uncomment the previous line.
 
 FLAW 3:

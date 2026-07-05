@@ -16,7 +16,7 @@
 {% for p in posts %}
 <article>
 	<h3>Post by <a href="/user/{{p.account.id}}/">{{p.account.username}}</a></h3>
-	<p>{{p.content}}</p>
+	<p>{{p.content|linebreaks}}</p>
 	<a href="/post/{{p.id}}/">View raw</a>
 	{% if p.account.id == user.id %}
 	<form action="/delete/" method="POST">

@@ -10,7 +10,9 @@
 <h2>Posts by {{username}}</h2>
 {% for p in posts %}
 <article>
-	<p>{{p.content}}</p>
+	<h3>Post by <a href="/user/{{p.account.id}}/">{{p.account.username}}</a></h3>
+	<p>{{p.content|linebreaks}}</p>
+	<a href="/post/{{p.id}}/">View raw</a>
 	{% if p.account.id == user.id %}
 	<form action="/delete/" method="POST">
 		{% csrf_token %}

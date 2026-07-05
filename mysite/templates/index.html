@@ -4,8 +4,8 @@
 {% block content %}
 {% if user.is_authenticated %}
 <a href="/private_notes/">Make or view private notes</a> <br>
-<a href="/search_user/">Search for users by username</a> <br>
 {% endif %}
+<a href="/search_user/">Search for users by username</a> <br>
 
 <h2>Posts</h2>
 {% if user.is_authenticated %}

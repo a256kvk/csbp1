@@ -4,8 +4,8 @@
 {% block content %}
 
 <h2>REGISTER</h2>
-<form method="GET">
 <!-- <form method="POST"> -->
+<form method="GET">
   {% csrf_token %}
   {{form}}
   <button type="submit">Register</button>

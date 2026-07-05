@@ -15,7 +15,7 @@ def homePageView(request):
     posts = PostsModel.objects.all()
     return render(request, "index.html", {"posts": posts})
 
-# remove @csrf_exempt and uncomment the {{ csrf_token }} in the html to fix the vulnerability
+# remove the @csrf_exempt line to fix the vulnerability
 @csrf_exempt
 def privateNotesView(request):
     if request.method == "POST":
@@ -42,14 +42,10 @@ def postView(request,post_id):
 def searchUserView(request):
     if request.method == "POST":
         query = request.POST["query"]
-        #fixed code:
         #r=User.objects.filter(username__contains=query)
-
-        #vulnerable code:
         with connection.cursor() as cur:
             res=cur.execute(f"SELECT id, username FROM auth_user WHERE username LIKE '%{query}%'")
             r=[{"id": q[0],"username": q[1]} for q in res.fetchall()]
-        #^vulnerable code
     else:
         r=None
     return render(request, "search_user.html", {"results":r})

@@ -15,7 +15,7 @@ def homePageView(request):
     posts = PostsModel.objects.all()
     return render(request, "index.html", {"posts": posts})
 
-# remove @csrf_exempt
+# remove @csrf_exempt and uncomment the {{ csrf_token }} in the html to fix the vulnerability
 @csrf_exempt
 def privateNotesView(request):
     if request.method == "POST":
